@@ -1,4 +1,4 @@
-package io.antmednik.io.antmednik.aoc2k25.common
+package io.antmednik.aoc2k25.common
 
 import io.antmednik.aoc2k25.common.InputFileEnumeration
 

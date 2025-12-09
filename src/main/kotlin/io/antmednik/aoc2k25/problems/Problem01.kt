@@ -1,6 +1,6 @@
-package io.antmednik.io.antmednik.aoc2k25.problems
+package io.antmednik.aoc2k25.problems
 
-import io.antmednik.io.antmednik.aoc2k25.common.InputFileSequence
+import io.antmednik.aoc2k25.common.InputFileSequence
 
 /**
  * --- Day 1: Secret Entrance ---
