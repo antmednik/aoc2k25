@@ -46,6 +46,31 @@ import kotlin.use
  * Adding up all the invalid IDs in this example produces 1227775554.
  *
  * What do you get if you add up all of the invalid IDs?
+ *
+ * --- Part Two ---
+ * The clerk quickly discovers that there are still invalid IDs in the ranges in your list. Maybe the young Elf
+ * was doing other silly patterns as well?
+ *
+ * Now, an ID is invalid if it is made only of some sequence of digits repeated at least twice.
+ * So, 12341234 (1234 two times), 123123123 (123 three times), 1212121212 (12 five times),
+ * and 1111111 (1 seven times) are all invalid IDs.
+ *
+ * From the same example as before:
+ *
+ * 11-22 still has two invalid IDs, 11 and 22.
+ * 95-115 now has two invalid IDs, 99 and 111.
+ * 998-1012 now has two invalid IDs, 999 and 1010.
+ * 1188511880-1188511890 still has one invalid ID, 1188511885.
+ * 222220-222224 still has one invalid ID, 222222.
+ * 1698522-1698528 still contains no invalid IDs.
+ * 446443-446449 still has one invalid ID, 446446.
+ * 38593856-38593862 still has one invalid ID, 38593859.
+ * 565653-565659 now has one invalid ID, 565656.
+ * 824824821-824824827 now has one invalid ID, 824824824.
+ * 2121212118-2121212124 now has one invalid ID, 2121212121.
+ * Adding up all the invalid IDs in this example produces 4174379265.
+ *
+ * What do you get if you add up all of the invalid IDs using these new rules?
  */
 class Problem02 {
     fun solvePart1(): Long {
@@ -53,6 +78,15 @@ class Problem02 {
             ife.first().split(',').sumOf {
                 val rawRange = it.split("-")
                 sumInvalidIds(rawRange[0], rawRange[1])
+            }
+        }
+    }
+
+    fun solvePart2(): Long {
+        return InputFileSequence("problem02.txt").use { ife ->
+            ife.first().split(',').sumOf {
+                val rawRange = it.split("-")
+                sumInvalidIds2(rawRange[0], rawRange[1])
             }
         }
     }
@@ -109,12 +143,95 @@ class Problem02 {
         return invalidIdsSum
     }
 
-    // 123 -> 123123
     private fun getFull(half: Long, len: Int): Long {
         var result: Long = half
         repeat(len) {
             result *= 10
         }
         return result + half
+    }
+
+    /**
+     * sequence = 12
+     * sequenceLen = 2
+     * times = 3
+     * retval = 121212
+     */
+    private fun getFull2(sequence: Long, times: Int): Long {
+        var multiplier = 1L
+        var tmp = sequence
+        while (tmp > 0) {
+            multiplier *= 10
+            tmp /= 10
+        }
+        var retval = sequence
+        repeat(times - 1) {
+            retval *= multiplier
+            retval += sequence
+        }
+        return retval
+    }
+
+    private fun subGroupExclusiveEnd(subGroupLen: Int): Long {
+        var retval = 1L
+        repeat(subGroupLen) { retval *= 10}
+        return retval
+    }
+
+    internal fun sumInvalidIds2(startId: String, endId: String): Long {
+        var groupLen = startId.length
+        val endIdAsLong = endId.toLong()
+        var groupStart = startId.toLong()
+        var groupEnd = if (endId.length == groupLen) endIdAsLong else "9".repeat(groupLen).toLong()
+        var invalidIds = mutableSetOf<Long>()
+        while (groupLen <= endId.length) {
+            collectInvalidIdsInGroup(groupStart, groupEnd, groupLen, invalidIds)
+            groupLen++
+            groupStart = ("1" + "0".repeat(groupLen-1)).toLong()
+            if (endId.length == groupLen) {
+                groupEnd = endIdAsLong
+            } else {
+                groupEnd = groupEnd * 10 + 9
+            }
+        }
+        return invalidIds.sum()
+    }
+
+    internal fun collectInvalidIdsInGroup(groupStart: Long, groupEnd: Long, groupDigitsCount: Int, invalidIds: MutableSet<Long>) {
+        for (subGroupLen in divisors[groupDigitsCount] ?: throw IllegalStateException("divisors unset for $groupDigitsCount")) {
+            val subGroupsCount = groupDigitsCount / subGroupLen
+            var subGroup = groupStart.toString().substring(0, subGroupLen).toLong()
+            val candidate = getFull2(subGroup, subGroupsCount)
+            if (candidate in groupStart..groupEnd) {
+                invalidIds.add(candidate)
+            }
+            subGroup++
+            val sgee = subGroupExclusiveEnd(subGroupLen)
+            while (subGroup < sgee) {
+                val candidate = getFull2(subGroup, subGroupsCount)
+                if (candidate <= groupEnd) {
+                    invalidIds.add(candidate)
+                } else {
+                    break
+                }
+                subGroup++
+            }
+        }
+    }
+
+    private companion object {
+        val divisors = mapOf(
+            1 to emptyList(),
+            2 to listOf(1),
+            3 to listOf(1),
+            4 to listOf(2, 1),
+            5 to listOf(1),
+            6 to listOf(3, 2, 1),
+            7 to listOf(1),
+            8 to listOf(4, 2, 1),
+            9 to listOf(3, 1),
+            10 to listOf(5, 2, 1),
+            11 to listOf(1),
+        )
     }
 }

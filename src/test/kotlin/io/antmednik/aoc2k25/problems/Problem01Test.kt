@@ -1,6 +1,5 @@
 package io.antmednik.aoc2k25.problems
 
-import io.antmednik.io.antmednik.aoc2k25.problems.Problem01
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
