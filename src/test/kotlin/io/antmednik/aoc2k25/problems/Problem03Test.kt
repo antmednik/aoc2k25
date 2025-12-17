@@ -21,4 +21,21 @@ class Problem03Test {
             Problem03().findMaxInBank(bank)
         )
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "987654321111111,987654321111",
+        "811111111111119,811111111119",
+        "234234234234278,434234234278",
+        "818181911112111,888911112111",
+    ])
+    fun finMax12InBankNaiveTest(data: String) {
+        val splitted = data.split(',')
+        val bank = splitted[0]
+        val expected = splitted[1].toLong()
+        assertEquals(
+            expected,
+            Problem03().finMax12InBankNaive(bank)
+        )
+    }
 }

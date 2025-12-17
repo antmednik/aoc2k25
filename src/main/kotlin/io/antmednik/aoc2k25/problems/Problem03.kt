@@ -81,7 +81,12 @@ class Problem03 {
         }
     }
 
-    // 818181911112111
+    fun solvePart2(): Long {
+        return InputFileSequence("problem03.txt").use { ife ->
+            ife.sumOf { finMax12InBankNaive(it) }
+        }
+    }
+
     internal fun findMaxInBank(bank: String): Int {
         var leftMax = bank[0]
         var rightMax = bank[1]
@@ -104,6 +109,35 @@ class Problem03 {
             }
         }
         return maxJoltage
+    }
+
+    internal fun finMax12InBankNaive(bank: String): Long {
+        val sb = StringBuilder()
+        var nextPos = 0
+        repeat(12) { idx ->
+            val startPos = Math.max(idx, nextPos)
+            var max = bank[startPos]
+            nextPos = startPos + 1
+            if (max == '9') {
+                sb.append(max)
+            } else {
+                val start = startPos+1
+                val end = bank.length-(12-idx)
+                for (pos in start..end) {
+                    if (bank[pos] == '9') {
+                        max = bank[pos]
+                        nextPos = pos + 1
+                        break
+                    }
+                    if (max < bank[pos]) {
+                        max = bank[pos]
+                        nextPos = pos + 1
+                    }
+                }
+                sb.append(max)
+            }
+        }
+        return sb.toString().toLong()
     }
 
     private fun joltage(left: Char, right: Char): Int = (left - '0') * 10 + (right - '0')
