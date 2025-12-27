@@ -1,6 +1,6 @@
 
-import io.antmednik.aoc2k25.problems.Problem04
+import io.antmednik.aoc2k25.problems.Problem05
 
 fun main() {
-    println(Problem04().solvePart2())
+    println(Problem05().part1())
 }
