@@ -16,7 +16,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    jvmArgs("--add-modules", "jdk.incubator.vector")
 }
+
+tasks.withType<JavaExec>() {
+    jvmArgs("--add-modules", "jdk.incubator.vector")
+}
+
 kotlin {
     jvmToolchain(22)
 }
