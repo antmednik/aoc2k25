@@ -34,4 +34,19 @@ class Problem06Test {
             )
         )
     }
+
+    @Test
+    fun part2Test() {
+        assertEquals(
+            3263827,
+            Problem06().part2(
+                listOf(
+                    "123 328  51 64",
+                    " 45 64  387 23",
+                    "  6 98  215 314",
+                    "*   +   *   +",
+                )
+            )
+        )
+    }
 }
